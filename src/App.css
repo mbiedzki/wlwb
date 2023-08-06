@@ -7,6 +7,15 @@
     width: 100%;
 }
 
-.map-view {
-    height: 100vh
+.MapView {
+    height: calc(100vh - 50px)
+}
+
+.HeaderView {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    color: #04f625;
+    background: #242424;
 }

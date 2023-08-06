@@ -11,7 +11,7 @@ export const useCreateMap = (mapRef: any) => {
                 viewingMode: 'local',
                 container: mapRef.current,
                 map: map,
-                zoom: 7,
+                zoom: 6.7,
                 center: [19, 52],
             });
         })(mapRef);
