@@ -13,7 +13,7 @@ import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import React from 'react';
 
 export const getMap = () => new Map({
-    basemap: 'hybrid',
+    basemap: 'topo-vector',
     ground: 'world-elevation',
 });
 
@@ -34,7 +34,7 @@ export const getHomeButton = (view: SceneView) => new Home({
 
 const getBasemapGallery = (view: SceneView) => new BasemapGallery({
     view: view,
-    source: [Basemap.fromId('hybrid'), Basemap.fromId('topo-vector'), Basemap.fromId('streets-vector')],
+    source: [Basemap.fromId('topo-vector'), Basemap.fromId('hybrid'), Basemap.fromId('streets-vector')],
 });
 
 export const getBaseMapsExpand = (view: SceneView) => new Expand({

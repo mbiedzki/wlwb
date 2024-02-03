@@ -12,10 +12,12 @@ import {
 } from './mapUtils';
 import { getLayers } from './layerUtils';
 
+
 export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | null>) => {
 
     const map = getMap();
     const layer = getLayers();
+    const handles: IHandle[] = [];
 
     useEffect(() => {
         let view: SceneView | undefined;
@@ -37,10 +39,11 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
             const elevationProfile = getElevationProfile(view);
             const profileExpand = getProfileExpand(view);
             view.ui.add(profileExpand, 'top-right');
-            setElevationProfilePopupEvent(view, layer, elevationProfile, profileExpand);
+            handles.push(setElevationProfilePopupEvent(view, layer, elevationProfile, profileExpand));
 
             return () => {
                 view?.destroy();
+                handles.forEach((handle) => handle.remove());
             };
 
         })(mapRef);
