@@ -17,10 +17,10 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
 
     const map = getMap();
     const layer = getLayers();
-    const handles: IHandle[] = [];
 
     useEffect(() => {
         let view: SceneView | undefined;
+        const handles: IHandle[] = [];
         (async (mapRef: any) => {
             map.add(layer);
 
@@ -48,5 +48,5 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
 
         })(mapRef);
 
-    }, [mapRef]);
+    }, [layer, map, mapRef]);
 };

@@ -76,7 +76,7 @@ export const getProfileActionButton = () => new ActionButton({
     icon: 'graph-time-series',
 });
 
-export const showElevationProfile = async (input: Graphic, view: SceneView, elevationProfile: ElevationProfile,
+export const showElevationProfile = async (input: Graphic, elevationProfile: ElevationProfile,
                                            profileExpand: Expand) => {
     elevationProfile.input = input;
     profileExpand.expanded = true;
@@ -104,6 +104,6 @@ export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLay
             view.popup.close();
             const features = await layer.queryFeatures();
             const input = features.features[0] ?? null;
-            await showElevationProfile(input, view, elevationProfile, profileExpand);
+            await showElevationProfile(input, elevationProfile, profileExpand);
         }
     });
