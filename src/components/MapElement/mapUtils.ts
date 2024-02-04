@@ -4,7 +4,6 @@ import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 import SceneView from '@arcgis/core/views/SceneView';
 import Expand from '@arcgis/core/widgets/Expand';
 import Graphic from '@arcgis/core/Graphic';
-import LayerList from '@arcgis/core/widgets/LayerList';
 import BasemapGallery from '@arcgis/core/widgets/BasemapGallery';
 import Basemap from '@arcgis/core/Basemap';
 import Home from '@arcgis/core/widgets/Home';
@@ -78,22 +77,10 @@ export const getProfileActionButton = () => new ActionButton({
 
 export const showElevationProfile = async (input: Graphic, elevationProfile: ElevationProfile,
                                            profileExpand: Expand) => {
-    elevationProfile.input = input;
+    elevationProfile.set('input', input);
     profileExpand.expanded = true;
 };
 
-const getLayerList = (view: SceneView) => new LayerList({
-    container: document.createElement('div'),
-    view: view,
-});
-
-export const getLayerListExpand = (view: SceneView) =>
-    new Expand({
-        expandIcon: 'biking',
-        expandTooltip: 'Wyprawy',
-        view: view,
-        content: getLayerList(view),
-    });
 
 export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLayer, elevationProfile: ElevationProfile,
                                               profileExpand: Expand) => on(
@@ -103,7 +90,7 @@ export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLay
         if (event.action.id === 'profile') {
             view.popup.close();
             const features = await layer.queryFeatures();
-            const input = features.features[0] ?? null;
+            const input = features.features[0];
             await showElevationProfile(input, elevationProfile, profileExpand);
         }
     });

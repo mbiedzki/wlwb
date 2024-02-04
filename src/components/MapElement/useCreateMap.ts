@@ -4,13 +4,12 @@ import {
     getBaseMapsExpand,
     getElevationProfile,
     getHomeButton,
-    getLayerListExpand,
     getMap,
     getProfileExpand,
     getView,
     setElevationProfilePopupEvent,
 } from './mapUtils';
-import { getLayers } from './layerUtils';
+import { getLayerListExpand, getLayers } from './layerUtils';
 
 
 export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | null>) => {
@@ -22,7 +21,6 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
         let view: SceneView | undefined;
         const handles: IHandle[] = [];
         (async (mapRef: any) => {
-
             view = getView(map, mapRef);
             if (!view) return;
 
@@ -43,7 +41,6 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
                 map.add(layer);
                 if (view) handles.push(setElevationProfilePopupEvent(view, layer, elevationProfile, profileExpand));
             });
-
 
             return () => {
                 view?.destroy();
