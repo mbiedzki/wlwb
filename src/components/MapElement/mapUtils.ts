@@ -69,9 +69,9 @@ export const getProfileExpand = (view: SceneView) => new Expand({
     content: getElevationProfile(view),
 });
 
-export const getProfileActionButton = () => new ActionButton({
+export const getProfileActionButton = (layerId: string) => new ActionButton({
     title: 'Profil wysokości',
-    id: 'profile',
+    id: layerId,
     icon: 'graph-time-series',
 });
 
@@ -88,9 +88,10 @@ export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLay
     () => view.popup,
     'trigger-action',
     async (event) => {
-        if (event.action.id === 'profile') {
+        if (event.action.id === layer.id) {
             view.popup.close();
             const features = await layer.queryFeatures();
+            console.log('ABC query', features.features);
             const input = features.features[0];
             await showElevationProfile(input, profileExpand, view);
         }

@@ -11,15 +11,22 @@ export interface LayerProps {
     url: string;
 }
 
-const layerConfig: LayerProps[] = [{
-    id: '2023',
-    title: '2023 Krasnystaw - Białystok',
-    url: 'http://vps658602.ovh.net/wlwb_layers/2023.json',
-}];
+const layerConfig: LayerProps[] = [
+    {
+        id: '2023',
+        title: '2023 Krasnystaw - Białystok',
+        url: 'http://vps658602.ovh.net/wlwb_layers/2023.json',
+    },
+    {
+        id: '2022',
+        title: '2022 Ostrołęka - Korsze',
+        url: 'http://vps658602.ovh.net/wlwb_layers/2022.json',
+    },
+];
 
 export const getLayers = () => {
-    const profileActionButton = getProfileActionButton();
     return layerConfig.map((config, index) => {
+        const profileActionButton = getProfileActionButton(config.id);
         const layer = new GeoJSONLayer({
             id: config.id,
             title: config.title,
