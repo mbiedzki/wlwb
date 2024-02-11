@@ -91,7 +91,6 @@ export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLay
         if (event.action.id === layer.id) {
             view.popup.close();
             const features = await layer.queryFeatures();
-            console.log('ABC query', features.features);
             const input = features.features[0];
             await showElevationProfile(input, profileExpand, view);
         }

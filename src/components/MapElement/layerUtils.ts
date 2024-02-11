@@ -4,25 +4,8 @@ import SceneView from '@arcgis/core/views/SceneView';
 import LayerList from '@arcgis/core/widgets/LayerList';
 import Expand from '@arcgis/core/widgets/Expand';
 import { getRandomColor } from '../../services/utils';
+import { layerConfig } from './layerConfig';
 
-export interface LayerProps {
-    id: string;
-    title: string;
-    url: string;
-}
-
-const layerConfig: LayerProps[] = [
-    {
-        id: '2023',
-        title: '2023 Krasnystaw - Białystok',
-        url: 'http://vps658602.ovh.net/wlwb_layers/2023.json',
-    },
-    {
-        id: '2022',
-        title: '2022 Ostrołęka - Korsze',
-        url: 'http://vps658602.ovh.net/wlwb_layers/2022.json',
-    },
-];
 
 export const getLayers = () => {
     return layerConfig.map((config, index) => {
@@ -34,10 +17,10 @@ export const getLayers = () => {
             popupEnabled: true,
             popupTemplate:
                 {
-                    title: '{name}',
+                    title: config.title,
                     content: [{
                         type: 'text',
-                        text: '{desc}',
+                        text: config.desc,
                     }],
                     actions: [profileActionButton],
                 },
