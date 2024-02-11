@@ -1,3 +1,5 @@
 export const AppHeader = () => {
-    return <div className="HeaderView">Wyprawy rowerowe WLWB</div>;
+    return <div className="HeaderView">
+        <div>Wyprawy rowerowe WLWB</div>
+    </div>;
 };

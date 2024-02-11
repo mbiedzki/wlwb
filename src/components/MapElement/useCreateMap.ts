@@ -4,6 +4,7 @@ import {
     getBaseMapsExpand,
     getElevationProfile,
     getHomeButton,
+    getLegendExpand,
     getMap,
     getProfileExpand,
     getView,
@@ -29,6 +30,9 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
 
             const baseLayersExpand = getBaseMapsExpand(view);
             view.ui.add(baseLayersExpand, 'top-right');
+
+            const legendExpand = getLegendExpand(view);
+            view.ui.add(legendExpand, 'top-right');
 
             const layerListExpand = getLayerListExpand(view);
             view.ui.add(layerListExpand, 'top-right');

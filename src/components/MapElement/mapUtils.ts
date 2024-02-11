@@ -10,6 +10,7 @@ import Home from '@arcgis/core/widgets/Home';
 import { on } from '@arcgis/core/core/reactiveUtils';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
 import React from 'react';
+import Legend from '@arcgis/core/widgets/Legend';
 
 export const getMap = () => new Map({
     basemap: 'topo-vector',
@@ -41,6 +42,17 @@ export const getBaseMapsExpand = (view: SceneView) => new Expand({
     expandTooltip: 'Warstwy podkładowe',
     view: view,
     content: getBasemapGallery(view),
+});
+
+export const getLegendExpand = (view: SceneView) => new Expand({
+    expandIcon: 'legend',
+    expandTooltip: 'Legenda',
+    view: view,
+    content: getLegend(view),
+});
+
+export const getLegend = (view: SceneView) => new Legend({
+    view,
 });
 
 export const getElevationProfile = (view: SceneView) => new ElevationProfile({
