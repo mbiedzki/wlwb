@@ -5,19 +5,14 @@ import LayerList from '@arcgis/core/widgets/LayerList';
 import Expand from '@arcgis/core/widgets/Expand';
 import { getRandomColor } from '../../services/utils';
 import { layerConfig } from './layerConfig';
+import { LayerProps } from './types';
 
 
 export const getLayers = () => {
     return layerConfig.map((config, index) => {
-        const {
-            id,
-            title,
-            desc,
-            url,
-        } = config;
+        const { id } = config;
         const layerProfileActionButton = getProfileActionButton(id);
-        const layer = createGeoJSONLayer(id, title, desc, url, layerProfileActionButton);
-
+        const layer = createGeoJSONLayer(config, layerProfileActionButton);
         (layer as any).renderer = {
             type: 'simple',
             symbol: {
@@ -31,14 +26,20 @@ export const getLayers = () => {
     });
 };
 
-const createGeoJSONLayer = (id: string, title: string, desc: string, url: string, layerProfileActionButton: any) => {
+const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any) => {
+    const {
+        id,
+        title,
+        desc,
+        url,
+    } = config;
     return new GeoJSONLayer({
-        id: id,
-        title: title,
-        url: url,
+        id,
+        title,
+        url,
         popupEnabled: true,
         popupTemplate: {
-            title: title,
+            title,
             content: [{
                 type: 'text',
                 text: desc,
