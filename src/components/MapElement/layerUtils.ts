@@ -9,22 +9,15 @@ import { layerConfig } from './layerConfig';
 
 export const getLayers = () => {
     return layerConfig.map((config, index) => {
-        const profileActionButton = getProfileActionButton(config.id);
-        const layer = new GeoJSONLayer({
-            id: config.id,
-            title: config.title,
-            url: config.url,
-            popupEnabled: true,
-            popupTemplate:
-                {
-                    title: config.title,
-                    content: [{
-                        type: 'text',
-                        text: config.desc,
-                    }],
-                    actions: [profileActionButton],
-                },
-        });
+        const {
+            id,
+            title,
+            desc,
+            url,
+        } = config;
+        const layerProfileActionButton = getProfileActionButton(id);
+        const layer = createGeoJSONLayer(id, title, desc, url, layerProfileActionButton);
+
         (layer as any).renderer = {
             type: 'simple',
             symbol: {
@@ -38,19 +31,69 @@ export const getLayers = () => {
     });
 };
 
+const createGeoJSONLayer = (id: string, title: string, desc: string, url: string, layerProfileActionButton: any) => {
+    return new GeoJSONLayer({
+        id: id,
+        title: title,
+        url: url,
+        popupEnabled: true,
+        popupTemplate: {
+            title: title,
+            content: [{
+                type: 'text',
+                text: desc,
+            }],
+            actions: [layerProfileActionButton],
+        },
+    });
+};
+
+const handleFullExtentAction = async (layer: GeoJSONLayer, view: SceneView) => {
+    await view.goTo(layer.fullExtent);
+};
+
+const handleSelectAction = async (layer: GeoJSONLayer, view: SceneView, highlightedFeature: __esri.Handle) => {
+    const queriedFeatures = await layer.queryFeatures();
+    const feature = queriedFeatures.features[0];
+    await view.whenLayerView(layer).then(layerView => {
+        if (highlightedFeature) highlightedFeature.remove();
+        highlightedFeature = layerView.highlight(feature);
+    });
+    return highlightedFeature;
+};
+
+const handleDeselectAction = (highlightedFeature: __esri.Handle) => {
+    if (highlightedFeature) highlightedFeature.remove();
+};
+
 const getLayerList = (view: SceneView) => {
+    let highlightedFeature: __esri.Handle;
+
     const layerList = new LayerList({
         container: document.createElement('div'),
         view: view,
         listItemCreatedFunction: defineLayerListActions,
     });
+
     layerList.on('trigger-action', async (event) => {
-        const id = event.action.id;
-        const layer = event.item.layer;
-        if (id === 'full-extent') {
-            await view.goTo(layer.fullExtent);
+        const actionId = event.action.id;
+        const layer = event.item.layer as GeoJSONLayer;
+
+        switch (actionId) {
+            case 'full-extent':
+                await handleFullExtentAction(layer, view);
+                break;
+            case 'select':
+                highlightedFeature = await handleSelectAction(layer, view, highlightedFeature);
+                break;
+            case 'deselect':
+                handleDeselectAction(highlightedFeature);
+                break;
+            default:
+                break;
         }
     });
+
     return layerList;
 };
 
@@ -71,6 +114,16 @@ export const defineLayerListActions = async (event: { item: any; }) => {
                 title: 'Przybliż do trasy',
                 className: 'esri-icon-zoom-out-fixed',
                 id: 'full-extent',
+            },
+            {
+                title: 'Zaznacz',
+                className: 'esri-icon-checkbox-checked',
+                id: 'select',
+            },
+            {
+                title: 'Odznacz',
+                className: 'esri-icon-checkbox-unchecked',
+                id: 'deselect',
             },
         ],
     ];
