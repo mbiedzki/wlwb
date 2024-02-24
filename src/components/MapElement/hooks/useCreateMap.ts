@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import SceneView from '@arcgis/core/views/SceneView';
 import {
+    addToUI,
     getBaseMapsExpand,
     getElevationProfile,
     getHomeButton,
@@ -9,8 +10,8 @@ import {
     getProfileExpand,
     getView,
     setElevationProfilePopupEvent,
-} from './mapUtils';
-import { getLayerListExpand, getLayers } from './layerUtils';
+} from '../utils/mapUtils';
+import { getLayerListExpand, getLayers } from '../utils/layerUtils';
 
 
 export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | null>) => {
@@ -25,17 +26,10 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
             view = getView(map, mapRef);
             if (!view) return;
 
-            const homeBtn = getHomeButton(view);
-            view.ui.add(homeBtn, 'top-right');
-
-            const baseLayersExpand = getBaseMapsExpand(view);
-            view.ui.add(baseLayersExpand, 'top-right');
-
-            const legendExpand = getLegendExpand(view);
-            view.ui.add(legendExpand, 'top-right');
-
-            const layerListExpand = getLayerListExpand(view);
-            view.ui.add(layerListExpand, 'top-right');
+            addToUI(view, getHomeButton, 'top-right');
+            addToUI(view, getBaseMapsExpand, 'top-right');
+            addToUI(view, getLegendExpand, 'top-right');
+            addToUI(view, getLayerListExpand, 'top-right');
 
             const elevationProfile = getElevationProfile(view);
             const profileExpand = getProfileExpand(view);
@@ -53,5 +47,5 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
 
         })(mapRef);
 
-    }, [map, mapRef]);
+    }, [map, mapRef, layers]);
 };

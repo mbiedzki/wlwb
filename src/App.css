@@ -19,11 +19,3 @@
     color: #04f625;
     background: #242424;
 }
-
-.Toggle.react-toggle--checked .react-toggle-track {
-    background: blue;
-}
-
-.Toggle.react-toggle-thumb {
-    background: red;
-}

@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { useCreateMap } from './useCreateMap';
+import { useCreateMap } from './hooks/useCreateMap';
 
 export const MapElement = () => {
     const mapRef = useRef<HTMLDivElement | null>(null);

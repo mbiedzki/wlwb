@@ -28,6 +28,11 @@ export const getView = (map: Map, mapRef: React.MutableRefObject<HTMLDivElement 
     });
 };
 
+export const addToUI = (view: SceneView, elementFunction: (view: SceneView) => any, position: string) => {
+    const element = elementFunction(view);
+    view.ui.add(element, position);
+};
+
 export const getHomeButton = (view: SceneView) => new Home({
     view,
 });
