@@ -2,6 +2,7 @@
   "name": "wlwb",
   "version": "1.0",
   "private": true,
+  "homepage": "/wlwb",
   "dependencies": {
     "@arcgis/core": "^4.27.6",
     "@testing-library/jest-dom": "^5.14.1",
