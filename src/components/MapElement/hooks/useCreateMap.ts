@@ -14,6 +14,13 @@ import {
 import { getLayerListExpand, getLayers } from '../utils/layerUtils';
 
 
+/**
+ * Sets up a map with specified layers and UI components using a given mapRef.
+ *
+ * @param {React.MutableRefObject<HTMLDivElement | null>} mapRef - The reference to the HTML div element where the map
+ *     will be rendered.
+ * @returns {void}
+ */
 export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | null>) => {
 
     const map = getMap();

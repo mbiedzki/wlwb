@@ -9,7 +9,14 @@ import { LayerProps } from '../types';
 import ActionButton from '@arcgis/core/support/actions/ActionButton';
 
 
-const createRendererObj = (numOfSteps: number, step: number) => ({
+/**
+ * Creates a renderer object for displaying a line symbol on a map.
+ *
+ * @param {number} numOfSteps - The total number of steps.
+ * @param {number} step - The current step.
+ * @returns {Object} The renderer object.
+ */
+const createRendererObj = (numOfSteps: number, step: number): object => ({
     type: 'simple',
     symbol: {
         type: 'simple-line',
@@ -19,14 +26,28 @@ const createRendererObj = (numOfSteps: number, step: number) => ({
     },
 });
 
-const createLayer = (config: LayerProps, actionButton: ActionButton, rendererObj: any) => {
+/**
+ * Creates a GeoJSONLayer with provided configuration, action button, and renderer object.
+ *
+ * @param {LayerProps} config - The configuration for the layer.
+ * @param {ActionButton} actionButton - The action button for the layer.
+ * @param {any} rendererObj - The renderer object for the layer.
+ * @returns {GeoJSONLayer} - The created GeoJSONLayer.
+ */
+const createLayer = (config: LayerProps, actionButton: ActionButton, rendererObj: any): GeoJSONLayer => {
     const layer = createGeoJSONLayer(config, actionButton);
     (layer as any).renderer = rendererObj;
 
     return layer;
 };
 
-export const getLayers = () => {
+
+/**
+ * Retrieves a list of GeoJSON layers based on the layer configuration.
+ *
+ * @return {Array<GeoJSONLayer>} An array of GeoJSON layers.
+ */
+export const getLayers = (): Array<GeoJSONLayer> => {
     return layerConfig.map((config, index) => {
         const actionButton = getProfileActionButton(config.id);
         const rendererObj = createRendererObj(layerConfig.length, index);
@@ -35,7 +56,14 @@ export const getLayers = () => {
     });
 };
 
-const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any) => {
+/**
+ * Creates a GeoJSON layer with a popup template.
+ *
+ * @param {LayerProps} config - The configuration object for the layer.
+ * @param {any} layerProfileActionButton - The action button for the layer profile.
+ * @returns {GeoJSONLayer} - The created GeoJSON layer.
+ */
+const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): GeoJSONLayer => {
     const {
         id,
         title,
@@ -61,11 +89,27 @@ const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any) =
     });
 };
 
-const handleFullExtentAction = async (layer: GeoJSONLayer, view: SceneView) => {
+/**
+ * Handles the action to zoom the view to the full extent of a GeoJSONLayer.
+ * @param {GeoJSONLayer} layer - The GeoJSON layer to zoom to the full extent of.
+ * @param {SceneView} view - The scene view to apply the zoom action to.
+ * @returns {Promise<void>} - A promise that resolves once the view has been zoomed to the full extent.
+ */
+const handleFullExtentAction = async (layer: GeoJSONLayer, view: SceneView): Promise<void> => {
     await view.goTo(layer.fullExtent);
 };
 
-const handleSelectAction = async (layer: GeoJSONLayer, view: SceneView, featureHandle: __esri.Handle) => {
+/**
+ * Handles the action of selecting a feature and highlighting it on the map.
+ *
+ * @param {GeoJSONLayer} layer - The GeoJSON layer containing the features.
+ * @param {SceneView} view - The SceneView object representing the map view.
+ * @param {__esri.Handle} featureHandle - The handle representing the highlighted feature.
+ *
+ * @returns {Promise<__esri.Handle>} - A promise that resolves to the handle of the highlighted feature.
+ */
+const handleSelectAction = async (layer: GeoJSONLayer, view: SceneView,
+                                  featureHandle: __esri.Handle): Promise<__esri.Handle> => {
     const queriedFeatures = await layer.queryFeatures();
     const firstFeature = queriedFeatures.features[0];
     const layerView = await view.whenLayerView(layer);
@@ -76,12 +120,26 @@ const handleSelectAction = async (layer: GeoJSONLayer, view: SceneView, featureH
     return featureHandle;
 };
 
+/**
+ * Handles the deselect action by removing the highlighted feature.
+ *
+ * @param {__esri.Handle} highlightedFeature - The handle to the highlighted feature.
+ */
 const handleDeselectAction = (highlightedFeature: __esri.Handle) => {
     if (highlightedFeature) highlightedFeature.remove();
 };
 
+/**
+ * Handles the given action based on the actionId.
+ * @param {string} actionId - The ID of the action to be handled.
+ * @param {GeoJSONLayer} layer - The GeoJSON layer object.
+ * @param {SceneView} view - The SceneView object.
+ * @param {__esri.Handle} highlightedFeature - The highlighted feature handle.
+ * @returns {Promise<__esri.Handle | void>} - The promise that resolves when the action is handled or void if no action
+ *     is handled.
+ */
 const handleAction = async (actionId: string, layer: GeoJSONLayer, view: SceneView,
-                            highlightedFeature: __esri.Handle) => {
+                            highlightedFeature: __esri.Handle): Promise<__esri.Handle | void> => {
     switch (actionId) {
         case 'full-extent':
             await handleFullExtentAction(layer, view);
@@ -96,7 +154,13 @@ const handleAction = async (actionId: string, layer: GeoJSONLayer, view: SceneVi
     }
 };
 
-const getLayerList = (view: SceneView) => {
+/**
+ * Creates a new instance of `LayerList` and returns it.
+ *
+ * @param {SceneView} view - The `SceneView` object representing the view in which the `LayerList` will be displayed.
+ * @returns {LayerList} The `LayerList` instance.
+ */
+const getLayerList = (view: SceneView): LayerList => {
     let highlightedFeature: __esri.Handle;
     const layerList = new LayerList({
         container: document.createElement('div'),
@@ -113,7 +177,13 @@ const getLayerList = (view: SceneView) => {
     return layerList;
 };
 
-export const getLayerListExpand = (view: SceneView) =>
+/**
+ * Creates an Expand widget with a layer list as content.
+ *
+ * @param {SceneView} view - The scene view to which the layer list is associated.
+ * @returns {Expand} The Expand widget with layer list as content.
+ */
+export const getLayerListExpand = (view: SceneView): Expand =>
     new Expand({
         expandIcon: 'biking',
         expandTooltip: 'Wyprawy',
@@ -121,7 +191,13 @@ export const getLayerListExpand = (view: SceneView) =>
         content: getLayerList(view),
     });
 
-const createActions = () => {
+/**
+ * Creates an array of actions.
+ * Each action object contains a title, className, and id.
+ *
+ * @returns {Array} An array of action objects.
+ */
+const createActions = (): Array<any> => {
     return [
         {
             title: 'Przybliż do trasy',
@@ -141,6 +217,12 @@ const createActions = () => {
     ];
 };
 
+/**
+ * Asynchronously defines layer list actions for a given event item.
+ *
+ * @param {Object} event - The event object containing the item.
+ * @param {any} event.item - The item for which to define layer list actions.
+ */
 export const defineLayerListActions = async (event: { item: any; }) => {
     const item = event.item;
     await item.layer.when();

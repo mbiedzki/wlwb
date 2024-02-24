@@ -1,8 +1,15 @@
+/**
+ * Generates a random color based on the given number of steps and step value.
+ * This function generates vibrant, evenly spaced colors, which is useful for creating distinguishable markers.
+ *
+ * @param {number} numOfSteps - The number of steps in the color gradient
+ * @param {number} step - The step value determining the position in the color gradient
+ * @return {string} The generated color in hexadecimal format (#RRGGBB)
+ *
+ * adapted from:
+ * http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+ */
 export const getRandomColor = (numOfSteps: number, step: number) => {
-    // This function generates vibrant, "evenly spaced" colours (i.e. no clustering). This is ideal for creating
-    // easily distinguishable vibrant markers in Google Maps and other apps. Adam Cole, 2011-Sept-14 HSV to RBG
-    // adapted from:
-    // http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
     let r = 0, g = 0, b = 0;
     let h = step / numOfSteps;
     let i = ~~(h * 6);

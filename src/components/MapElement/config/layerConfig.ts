@@ -1,5 +1,13 @@
 import { LayerProps } from '../types';
 
+/**
+ * Represents a configuration for layers.
+ * @typedef {Object} LayerProps
+ * @property {string} id - The ID of the layer.
+ * @property {string} title - The title of the layer.
+ * @property {string} desc - The description of the layer.
+ * @property {string} url - The URL of the layer.
+ */
 export const layerConfig: LayerProps[] = [
     {
         id: '2011',
