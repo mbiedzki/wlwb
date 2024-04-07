@@ -10,10 +10,63 @@ import { LayerProps } from '../types';
  */
 export const layerConfig: LayerProps[] = [
     {
+        id: '2001',
+        title: '2001 Suwalszczyzna',
+        desc: '219 km',
+        url: 'https://biedzki.pl/wlwb_layers/2001.json',
+    },
+    {
+        id: '2004',
+        title: '2004 Kresy Wschodnie',
+        desc: '276 km',
+        url: 'https://biedzki.pl/wlwb_layers/2004.json',
+    },
+    {
+        id: '2005',
+        title: '2005 Bory Tucholskie',
+        desc: '303 km',
+        url: 'https://biedzki.pl/wlwb_layers/2005.json',
+    },
+    {
+        id: '2006',
+        title: '2006 Wielkopolska',
+        desc: '263 km',
+        url: 'https://biedzki.pl/wlwb_layers/2006.json',
+    },
+    {
+        id: '2007',
+        title: '2007 Pomorze',
+        desc: '412 km',
+        url: 'https://biedzki.pl/wlwb_layers/2007.json',
+    },
+    {
+        id: '2008',
+        title: '2008 Litwa',
+        desc: '389 km',
+        url: 'https://biedzki.pl/wlwb_layers/2008.json',
+    },
+    {
+        id: '2009',
+        title: '2009 Malbork - Sochaczew',
+        desc: '411 km',
+        url: 'https://biedzki.pl/wlwb_layers/2009.json',
+    },
+    {
+        id: '2010',
+        title: '2010 Roztocze',
+        desc: '381 km',
+        url: 'https://biedzki.pl/wlwb_layers/2010.json',
+    }, {
         id: '2011',
-        title: '2011 Ciechanów - Kolno',
-        desc: '176 km',
+        title: '2011 Podlasie i Kurpie',
+        desc: '344 km',
         url: 'https://biedzki.pl/wlwb_layers/2011.json',
+    },
+    {
+        id: '2012',
+        title: '2012 Odra',
+        desc: '363 km',
+        url: 'https://biedzki.pl/wlwb_layers/2012.json',
     },
     {
         id: '2013',
