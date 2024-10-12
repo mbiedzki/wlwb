@@ -139,18 +139,17 @@ export const getElevationProfile = (view: SceneView): ElevationProfile => new El
 });
 
 /**
- * Creates a new Expand widget instance for displaying elevation profile.
+ * Creates an Expand widget for displaying an Elevation Profile in a specified SceneView.
  *
- * @param {SceneView} view - The SceneView instance to associate the
- *                          expand widget with.
- *
- * @returns {Expand} Returns a new Expand widget instance.
+ * @param {SceneView} view - The SceneView in which the Elevation Profile will be displayed.
+ * @param {ElevationProfile} elevationProfile - The Elevation Profile widget to be expanded.
+ * @returns {Expand} An Expand widget configured with an elevation profile and relevant settings.
  */
-export const getProfileExpand = (view: SceneView): Expand => new Expand({
+export const getProfileExpand = (view: SceneView, elevationProfile: ElevationProfile): Expand => new Expand({
     expandIcon: 'graph-time-series',
     expandTooltip: 'Profil wysokości',
     view: view,
-    content: getElevationProfile(view),
+    content: elevationProfile,
 });
 
 /**

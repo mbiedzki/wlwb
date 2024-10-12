@@ -39,8 +39,13 @@ export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>): v
             addToUI(view, getLayerListExpand, 'top-right');
 
             let elevationProfile = getElevationProfile(view);
-            const profileExpand = getProfileExpand(view);
+            const profileExpand = getProfileExpand(view, elevationProfile);
             view.ui.add(profileExpand, 'top-right');
+
+            view.on('layerview-create-error', (event) => {
+                console.error('WLWB failed to load layer:', event.layer.id);
+                alert(`Problem z załadowaniem warstwy: ${event.layer.id}`);
+            });
 
             layers.forEach((layer) => {
                 map.add(layer);

@@ -9,7 +9,7 @@
  * adapted from:
  * http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
  */
-export const getRandomColor = (numOfSteps: number, step: number) => {
+export const getRandomColor = (numOfSteps: number, step: number): string => {
     let r = 0, g = 0, b = 0;
     let h = step / numOfSteps;
     let i = ~~(h * 6);

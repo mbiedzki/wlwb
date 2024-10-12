@@ -141,4 +141,10 @@ export const layerConfig: LayerProps[] = [
         desc: '498 km',
         url: 'https://biedzki.pl/wlwb_layers/2023.json',
     },
+    {
+        id: '2024',
+        title: '2024 Końskie - Chełm',
+        desc: '471 km',
+        url: 'https://biedzki.pl/wlwb_layers/2024.json',
+    },
 ];
