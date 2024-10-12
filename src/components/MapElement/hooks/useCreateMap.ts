@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { MutableRefObject, useEffect } from 'react';
 import SceneView from '@arcgis/core/views/SceneView';
 import {
     addToUI,
@@ -17,11 +17,11 @@ import { getLayerListExpand, getLayers } from '../utils/layerUtils';
 /**
  * Sets up a map with specified layers and UI components using a given mapRef.
  *
- * @param {React.MutableRefObject<HTMLDivElement | null>} mapRef - The reference to the HTML div element where the map
+ * @param {MutableRefObject<HTMLDivElement | null>} mapRef - The reference to the HTML div element where the map
  *     will be rendered.
  * @returns {void}
  */
-export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | null>) => {
+export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>): void => {
 
     const map = getMap();
     const layers = getLayers();
@@ -38,7 +38,7 @@ export const useCreateMap = (mapRef: React.MutableRefObject<HTMLDivElement | nul
             addToUI(view, getLegendExpand, 'top-right');
             addToUI(view, getLayerListExpand, 'top-right');
 
-            const elevationProfile = getElevationProfile(view);
+            let elevationProfile = getElevationProfile(view);
             const profileExpand = getProfileExpand(view);
             view.ui.add(profileExpand, 'top-right');
 

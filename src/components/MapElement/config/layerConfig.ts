@@ -8,7 +8,14 @@ import { LayerProps } from '../types';
  * @property {string} desc - The description of the layer.
  * @property {string} url - The URL of the layer.
  */
+
 export const layerConfig: LayerProps[] = [
+    {
+        id: 'miasta',
+        title: 'Miasta',
+        desc: 'Miasta przez które jechaliśmy',
+        url: 'https://biedzki.pl/wlwb_layers/miasta.json',
+    },
     {
         id: '2001',
         title: '2001 Suwalszczyzna',

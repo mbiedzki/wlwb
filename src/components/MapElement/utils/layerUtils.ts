@@ -27,12 +27,31 @@ const createRendererObj = (numOfSteps: number, step: number): object => ({
 });
 
 /**
- * Creates a GeoJSONLayer with provided configuration, action button, and renderer object.
+ * Function to create a point renderer object.
  *
- * @param {LayerProps} config - The configuration for the layer.
+ * @returns {object} - The point renderer object.
+ */
+const createPointRendererObj = (): object => ({
+    type: 'simple',
+    symbol: {
+        type: 'simple-marker',
+        size: '10px',
+        style: 'circle',
+        color: 'white',
+        outline: {
+            color: 'green',
+            width: 2,  // points
+        },
+    },
+});
+
+/**
+ * Creates a GeoJSON layer with the given configuration, action button, and renderer object.
+ *
+ * @param {LayerProps} config - The configuration object for the layer.
  * @param {ActionButton} actionButton - The action button for the layer.
  * @param {any} rendererObj - The renderer object for the layer.
- * @returns {GeoJSONLayer} - The created GeoJSONLayer.
+ * @returns {GeoJSONLayer} - The created GeoJSON layer.
  */
 const createLayer = (config: LayerProps, actionButton: ActionButton, rendererObj: any): GeoJSONLayer => {
     const layer = createGeoJSONLayer(config, actionButton);
@@ -49,19 +68,25 @@ const createLayer = (config: LayerProps, actionButton: ActionButton, rendererObj
  */
 export const getLayers = (): Array<GeoJSONLayer> => {
     return layerConfig.map((config, index) => {
+        const isPointGeometry = config.id === 'miasta';
         const actionButton = getProfileActionButton(config.id);
-        const rendererObj = createRendererObj(layerConfig.length, index);
-
+        const rendererObj = isPointGeometry ? createPointRendererObj() : createRendererObj(layerConfig.length, index);
         return createLayer(config, actionButton, rendererObj);
     });
 };
 
 /**
- * Creates a GeoJSON layer with a popup template.
+ * Creates a GeoJSONLayer with specified configurations and an action button for the popup.
  *
- * @param {LayerProps} config - The configuration object for the layer.
- * @param {any} layerProfileActionButton - The action button for the layer profile.
- * @returns {GeoJSONLayer} - The created GeoJSON layer.
+ * @param {LayerProps} config - Configuration object for the layer, including id, title, description, and URL.
+ * @param {Object} layerProfileActionButton - Action button to be added to the popup template.
+ * @returns {GeoJSONLayer} - A configured instance of GeoJSONLayer.
+ *
+ * @typedef {Object} LayerProps
+ * @property {string} id - The identifier for the GeoJSONLayer.
+ * @property {string} title - The title for the GeoJSONLayer.
+ * @property {string} desc - The description to be displayed in the popup.
+ * @property {string} url - The URL to the GeoJSON data.
  */
 const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): GeoJSONLayer => {
     const {
@@ -71,7 +96,9 @@ const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): 
         url,
     } = config;
 
-    const popupTemplate = {
+    const isPointGeometry = id === 'miasta';
+
+    const linePopupTemplate = {
         title,
         content: [{
             type: 'text',
@@ -80,12 +107,42 @@ const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): 
         actions: [layerProfileActionButton],
     };
 
+    const pointPopupTemplate = {
+        title,
+        content: '{expression/desc}',
+        expressionInfos: [{
+            name: 'desc',
+            expression: '$feature.cmt',
+        }],
+    };
+
     return new GeoJSONLayer({
         id,
         title,
         url,
         popupEnabled: true,
-        popupTemplate,
+        popupTemplate: isPointGeometry ? pointPopupTemplate : linePopupTemplate,
+        elevationInfo: {
+            mode: 'relative-to-ground',
+            offset: isPointGeometry ? 60 : 50, // Elevation offset in meters
+        },
+        labelingInfo: isPointGeometry ? [{
+            symbol: {
+                type: 'text',
+                color: 'green',
+                haloColor: 'green',
+                haloSize: 0,
+                font: {
+                    family: 'Ubuntu Mono',
+                    size: 10,
+                    weight: 'bold',
+                },
+            },
+            labelPlacement: 'above-right',
+            labelExpressionInfo: {
+                expression: '$feature.name',
+            },
+        }] : undefined,
     });
 };
 

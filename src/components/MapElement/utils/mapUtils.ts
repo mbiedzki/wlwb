@@ -166,16 +166,17 @@ export const getProfileActionButton = (layerId: string): ActionButton => new Act
 });
 
 /**
- * Sets up and displays the elevation profile for a given graphic input, using the provided expand widget and scene
- * view.
+ * Asynchronously displays an elevation profile for a given input graphic on a scene view.
  *
- * @param {Graphic} input - The input graphic.
- * @param {Expand} profileExpand - The expand widget used to display the elevation profile.
- * @param {SceneView} view - The scene view.
- * @returns {Promise<void>}
+ * @param {Graphic} input - The graphic input for which the elevation profile will be generated.
+ * @param {Expand} profileExpand - The UI component used to show the elevation profile.
+ * @param {SceneView} view - The scene view where the graphic is displayed.
+ * @param {ElevationProfile} elevationProfile - The elevation profile object that generates the profile.
+ * @returns {Promise<void>} A promise that resolves when the elevation profile has been set and expanded.
  */
-export const showElevationProfile = async (input: Graphic, profileExpand: Expand, view: SceneView): Promise<void> => {
-    const content = getElevationProfile(view);
+export const showElevationProfile = async (input: Graphic, profileExpand: Expand, view: SceneView,
+                                           elevationProfile: ElevationProfile): Promise<void> => {
+    const content = elevationProfile;
     content.set('input', input);
     profileExpand.content = content;
     profileExpand.expanded = true;
@@ -199,6 +200,6 @@ export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLay
             view.popup.close();
             const features = await layer.queryFeatures();
             const input = features.features[0];
-            await showElevationProfile(input, profileExpand, view);
+            await showElevationProfile(input, profileExpand, view, elevationProfile);
         }
     });
