@@ -9,8 +9,7 @@ import Basemap from '@arcgis/core/Basemap';
 import Home from '@arcgis/core/widgets/Home';
 import { on } from '@arcgis/core/core/reactiveUtils';
 import GeoJSONLayer from '@arcgis/core/layers/GeoJSONLayer';
-import React from 'react';
-import Legend from '@arcgis/core/widgets/Legend';
+import React, { MutableRefObject } from 'react';
 
 /**
  * Returns a new instance of Map, configured with the specified options.
@@ -92,28 +91,6 @@ export const getBaseMapsExpand = (view: SceneView): Expand => new Expand({
 });
 
 /**
- * Creates an Expand widget with legend content for a given SceneView.
- * @param {SceneView} view - The SceneView to be used for the widget.
- * @returns {Expand} - The Expand widget instance.
- */
-export const getLegendExpand = (view: SceneView): Expand => new Expand({
-    expandIcon: 'legend',
-    expandTooltip: 'Legenda',
-    view: view,
-    content: getLegend(view),
-});
-
-/**
- * Creates a new legend for a given scene view.
- *
- * @param {SceneView} view - The scene view object to associate the legend with.
- * @returns {Legend} - The created legend object.
- */
-export const getLegend = (view: SceneView): Legend => new Legend({
-    view,
-});
-
-/**
  * Creates an instance of the ElevationProfile class.
  *
  * @param {SceneView} view - The SceneView object to attach the elevation profile to.
@@ -139,18 +116,21 @@ export const getElevationProfile = (view: SceneView): ElevationProfile => new El
 });
 
 /**
- * Creates an Expand widget for displaying an Elevation Profile in a specified SceneView.
+ * Creates an Expand widget to display the elevation profile.
  *
- * @param {SceneView} view - The SceneView in which the Elevation Profile will be displayed.
- * @param {ElevationProfile} elevationProfile - The Elevation Profile widget to be expanded.
- * @returns {Expand} An Expand widget configured with an elevation profile and relevant settings.
+ * @param {SceneView} view - The view in which the elevation profile widget will be expanded.
+ * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - A reference object to the elevation
+ *     profile component.
+ * @returns {Expand} The configured Expand widget containing the elevation profile.
  */
-export const getProfileExpand = (view: SceneView, elevationProfile: ElevationProfile): Expand => new Expand({
-    expandIcon: 'graph-time-series',
-    expandTooltip: 'Profil wysokości',
-    view: view,
-    content: elevationProfile,
-});
+export const getProfileExpand = (view: SceneView,
+                                 elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Expand => new Expand(
+    {
+        expandIcon: 'graph-time-series',
+        expandTooltip: 'Profil wysokości',
+        view: view,
+        content: elevationProfileRef.current,
+    });
 
 /**
  * Creates a profile action button.
@@ -165,32 +145,40 @@ export const getProfileActionButton = (layerId: string): ActionButton => new Act
 });
 
 /**
- * Asynchronously displays an elevation profile for a given input graphic on a scene view.
+ * Displays the elevation profile for a given graphic input on a scene view.
  *
- * @param {Graphic} input - The graphic input for which the elevation profile will be generated.
- * @param {Expand} profileExpand - The UI component used to show the elevation profile.
- * @param {SceneView} view - The scene view where the graphic is displayed.
- * @param {ElevationProfile} elevationProfile - The elevation profile object that generates the profile.
- * @returns {Promise<void>} A promise that resolves when the elevation profile has been set and expanded.
+ * @param {Graphic} input - The graphic input for which the elevation profile will be displayed.
+ * @param {Expand} profileExpand - The expand widget that will contain the elevation profile content.
+ * @param {SceneView} view - The scene view where the elevation profile will be shown.
+ * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - A reference object for the elevation
+ *     profile component.
+ *
+ * @returns {Promise<void>} A promise that resolves once the elevation profile is successfully displayed.
  */
 export const showElevationProfile = async (input: Graphic, profileExpand: Expand, view: SceneView,
-                                           elevationProfile: ElevationProfile): Promise<void> => {
-    const content = elevationProfile;
-    content.set('input', input);
-    profileExpand.content = content;
-    profileExpand.expanded = true;
+                                           elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Promise<void> => {
+    const content = elevationProfileRef.current;
+    if (content) {
+        content.set('input', null);
+        content.set('input', input);
+        profileExpand.content = content;
+        profileExpand.expanded = true;
+    }
 };
 
 
 /**
- * Binds an event to the SceneView's popup trigger-action event that opens the elevation profile popup.
- * @param {SceneView} view - The SceneView object.
- * @param {GeoJSONLayer} layer - The GeoJSONLayer object.
- * @param {ElevationProfile} elevationProfile - The ElevationProfile object.
- * @param {Expand} profileExpand - The Expand object.
- * @returns {IHandle}
+ * Registers an event handler to display the elevation profile popup for a given GeoJSON layer on a SceneView.
+ *
+ * @param {SceneView} view - The SceneView instance on which the popup event is set.
+ * @param {GeoJSONLayer} layer - The GeoJSONLayer for which the elevation profile is to be displayed.
+ * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - A reference to the ElevationProfile
+ *     component.
+ * @param {Expand} profileExpand - The Expand instance that manages the display of the ElevationProfile.
+ * @returns {IHandle} - A handle to the registered event, allowing removal or other event management operations.
  */
-export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLayer, elevationProfile: ElevationProfile,
+export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLayer,
+                                              elevationProfileRef: MutableRefObject<ElevationProfile | undefined>,
                                               profileExpand: Expand): IHandle => on(
     () => view.popup,
     'trigger-action',
@@ -199,6 +187,6 @@ export const setElevationProfilePopupEvent = (view: SceneView, layer: GeoJSONLay
             view.popup.close();
             const features = await layer.queryFeatures();
             const input = features.features[0];
-            await showElevationProfile(input, profileExpand, view, elevationProfile);
+            await showElevationProfile(input, profileExpand, view, elevationProfileRef);
         }
     });

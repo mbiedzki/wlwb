@@ -7,6 +7,8 @@ import { getRandomColor } from '../../../services/utils';
 import { layerConfig } from '../config/layerConfig';
 import { LayerProps } from '../types';
 import ActionButton from '@arcgis/core/support/actions/ActionButton';
+import { MutableRefObject } from 'react';
+import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 
 
 /**
@@ -157,54 +159,77 @@ const handleFullExtentAction = async (layer: GeoJSONLayer, view: SceneView): Pro
 };
 
 /**
- * Handles the action of selecting a feature and highlighting it on the map.
+ * Handles the selection action on a GeoJSON layer within a SceneView.
  *
- * @param {GeoJSONLayer} layer - The GeoJSON layer containing the features.
- * @param {SceneView} view - The SceneView object representing the map view.
- * @param {__esri.Handle} featureHandle - The handle representing the highlighted feature.
+ * This function performs the following tasks:
+ * 1. Removes any existing highlight on a feature if present.
+ * 2. Clears the input of the elevation profile if it exists.
+ * 3. Queries the GeoJSON layer for features.
+ * 4. Highlights the first feature from the queried results on the layer view.
  *
- * @returns {Promise<__esri.Handle>} - A promise that resolves to the handle of the highlighted feature.
+ * @param {GeoJSONLayer} layer - The layer from which features will be queried.
+ * @param {SceneView} view - The SceneView instance where the layer is rendered.
+ * @param {MutableRefObject<__esri.Handle | undefined>} highlightedFeatureRef - A reference object to store the handle
+ *     of the currently highlighted feature.
+ * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - A reference object to manage the
+ *     elevation profile input.
+ * @returns {Promise<void>} - A promise that resolves when the selection action is complete.
  */
 const handleSelectAction = async (layer: GeoJSONLayer, view: SceneView,
-                                  featureHandle: __esri.Handle): Promise<__esri.Handle> => {
+                                  highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+                                  elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Promise<void> => {
+    if (highlightedFeatureRef.current) highlightedFeatureRef.current.remove();
+    if (elevationProfileRef.current) (elevationProfileRef.current as any).input = null;
     const queriedFeatures = await layer.queryFeatures();
     const firstFeature = queriedFeatures.features[0];
     const layerView = await view.whenLayerView(layer);
-
-    if (featureHandle) featureHandle.remove();
-    featureHandle = layerView.highlight(firstFeature);
-
-    return featureHandle;
+    highlightedFeatureRef.current = layerView.highlight(firstFeature);
 };
 
 /**
- * Handles the deselect action by removing the highlighted feature.
+ * Performs the action to deselect features and clear elevation profile.
  *
- * @param {__esri.Handle} highlightedFeature - The handle to the highlighted feature.
+ * This function removes the highlighted feature and clears the input of the elevation profile.
+ *
+ * @param {MutableRefObject<__esri.Handle | undefined>} highlightedFeatureRef - Reference to the currently highlighted
+ *     feature.
+ * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - Reference to the elevation profile
+ *     component.
  */
-const handleDeselectAction = (highlightedFeature: __esri.Handle) => {
-    if (highlightedFeature) highlightedFeature.remove();
+const handleDeselectAction = (highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+                              elevationProfileRef: MutableRefObject<ElevationProfile | undefined>) => {
+    if (highlightedFeatureRef.current) highlightedFeatureRef.current.remove();
+    if (elevationProfileRef.current) (elevationProfileRef.current as any).input = null;
 };
 
 /**
- * Handles the given action based on the actionId.
- * @param {string} actionId - The ID of the action to be handled.
- * @param {GeoJSONLayer} layer - The GeoJSON layer object.
- * @param {SceneView} view - The SceneView object.
- * @param {__esri.Handle} highlightedFeature - The highlighted feature handle.
- * @returns {Promise<__esri.Handle | void>} - The promise that resolves when the action is handled or void if no action
- *     is handled.
+ * Handles various actions based on the provided action ID. This function performs specific tasks on
+ * a GeoJSON layer within a SceneView, such as zooming to the full extent, selecting a feature, or
+ * deselecting a feature. It utilizes references for highlighted features and elevation profiles.
+ *
+ * @param {string} actionId - The identifier of the action to be performed. Supported action IDs are:
+ *  'full-extent', 'select', and 'deselect'.
+ * @param {GeoJSONLayer} layer - The GeoJSON layer on which the action will be performed.
+ * @param {SceneView} view - The SceneView in which the layer is displayed.
+ * @param {MutableRefObject<__esri.Handle|undefined>} highlightedFeatureRef - A reference object that holds
+ *  a handle to the currently highlighted feature, if any.
+ * @param {MutableRefObject<ElevationProfile|undefined>} elevationProfileRef - A reference object that holds
+ *  the elevation profile associated with the highlighted feature, if any.
+ * @returns {Promise<__esri.Handle|void>} A promise that resolves to a handle if an action returns a handle,
+ * or void otherwise.
  */
 const handleAction = async (actionId: string, layer: GeoJSONLayer, view: SceneView,
-                            highlightedFeature: __esri.Handle): Promise<__esri.Handle | void> => {
+                            highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+                            elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Promise<__esri.Handle | void> => {
     switch (actionId) {
         case 'full-extent':
             await handleFullExtentAction(layer, view);
             break;
         case 'select':
-            return await handleSelectAction(layer, view, highlightedFeature);
+            await handleSelectAction(layer, view, highlightedFeatureRef, elevationProfileRef);
+            break;
         case 'deselect':
-            handleDeselectAction(highlightedFeature);
+            handleDeselectAction(highlightedFeatureRef, elevationProfileRef);
             break;
         default:
             break;
@@ -212,40 +237,54 @@ const handleAction = async (actionId: string, layer: GeoJSONLayer, view: SceneVi
 };
 
 /**
- * Creates a new instance of `LayerList` and returns it.
+ * Constructs and returns a configured LayerList widget for a given SceneView.
  *
- * @param {SceneView} view - The `SceneView` object representing the view in which the `LayerList` will be displayed.
- * @returns {LayerList} The `LayerList` instance.
+ * @param {SceneView} view - The SceneView instance for which the LayerList is created.
+ * @param {MutableRefObject<__esri.Handle | undefined>} highlightedFeatureRef - Reference object for managing
+ *     highlighted features.
+ * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - Reference object for managing the
+ *     elevation profile.
+ * @returns {LayerList} - The configured LayerList widget.
+ *
+ * The returned LayerList contains a list of layers associated with the specified SceneView. The list includes actions
+ * defined in the `defineLayerListActions` function, and handles triggered actions through an asynchronous event
+ *     handler.
  */
-const getLayerList = (view: SceneView): LayerList => {
-    let highlightedFeature: __esri.Handle;
+const getLayerList = (view: SceneView,
+                      highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+                      elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): LayerList => {
     const layerList = new LayerList({
         container: document.createElement('div'),
         view: view,
-        listItemCreatedFunction: defineLayerListActions,
+        listItemCreatedFunction: defineLayerListItem,
     });
 
     layerList.on('trigger-action', async (event) => {
         const actionId = event.action.id;
         const layer = event.item.layer as GeoJSONLayer;
-        highlightedFeature = await handleAction(actionId, layer, view, highlightedFeature) || highlightedFeature;
+        await handleAction(actionId, layer, view, highlightedFeatureRef, elevationProfileRef);
     });
 
     return layerList;
 };
 
 /**
- * Creates an Expand widget with a layer list as content.
+ * Creates an Expand widget to display a layer list within a SceneView.
  *
- * @param {SceneView} view - The scene view to which the layer list is associated.
- * @returns {Expand} The Expand widget with layer list as content.
+ * @param {SceneView} view - The view in which the layer list will be displayed.
+ * @param {MutableRefObject<__esri.Handle | undefined>} highlightedFeatureRef - Reference to the currently highlighted
+ *     feature.
+ * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - Reference to the elevation profile.
+ * @returns {Expand} - An expandable widget containing the layer list.
  */
-export const getLayerListExpand = (view: SceneView): Expand =>
+export const getLayerListExpand = (view: SceneView,
+                                   highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+                                   elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Expand =>
     new Expand({
         expandIcon: 'biking',
         expandTooltip: 'Wyprawy',
         view: view,
-        content: getLayerList(view),
+        content: getLayerList(view, highlightedFeatureRef, elevationProfileRef),
     });
 
 /**
@@ -280,8 +319,11 @@ const createActions = (): Array<any> => {
  * @param {Object} event - The event object containing the item.
  * @param {any} event.item - The item for which to define layer list actions.
  */
-export const defineLayerListActions = async (event: { item: any; }) => {
+export const defineLayerListItem = async (event: { item: any; }) => {
     const item = event.item;
     await item.layer.when();
     item.actionsSections = [createActions()];
+    item.panel = {
+        content: 'legend',
+    };
 };

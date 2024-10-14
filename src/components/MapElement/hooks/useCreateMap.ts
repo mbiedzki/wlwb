@@ -1,17 +1,17 @@
-import { MutableRefObject, useEffect } from 'react';
+import { MutableRefObject, useEffect, useRef } from 'react';
 import SceneView from '@arcgis/core/views/SceneView';
 import {
     addToUI,
     getBaseMapsExpand,
     getElevationProfile,
     getHomeButton,
-    getLegendExpand,
     getMap,
     getProfileExpand,
     getView,
     setElevationProfilePopupEvent,
 } from '../utils/mapUtils';
 import { getLayerListExpand, getLayers } from '../utils/layerUtils';
+import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 
 
 /**
@@ -23,33 +23,44 @@ import { getLayerListExpand, getLayers } from '../utils/layerUtils';
  */
 export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>): void => {
 
-    const map = getMap();
-    const layers = getLayers();
+    const map = useRef(getMap());
+    const layers = useRef(getLayers());
+    const highlightedFeatureRef = useRef<__esri.Handle>();
+    const elevationProfileRef = useRef<ElevationProfile>();
 
     useEffect(() => {
         let view: SceneView | undefined;
         const handles: IHandle[] = [];
         (async (mapRef: any) => {
-            view = getView(map, mapRef);
+            view = getView(map.current, mapRef);
             if (!view) return;
 
             addToUI(view, getHomeButton, 'top-right');
             addToUI(view, getBaseMapsExpand, 'top-right');
-            addToUI(view, getLegendExpand, 'top-right');
-            addToUI(view, getLayerListExpand, 'top-right');
 
-            let elevationProfile = getElevationProfile(view);
-            const profileExpand = getProfileExpand(view, elevationProfile);
+            const layerListExpand = getLayerListExpand(view, highlightedFeatureRef, elevationProfileRef);
+            view.ui.add(layerListExpand, 'top-right');
+
+            elevationProfileRef.current = getElevationProfile(view);
+            const profileExpand = getProfileExpand(view, elevationProfileRef);
             view.ui.add(profileExpand, 'top-right');
 
             view.on('layerview-create-error', (event) => {
-                console.error('WLWB failed to load layer:', event.layer.id);
-                alert(`Problem z załadowaniem warstwy: ${event.layer.id}`);
+                const { id } = event.layer;
+                if (id) {
+                    console.error('WLWB failed to load layer:', event.layer.id);
+                    alert(`Problem z załadowaniem warstwy: ${event.layer.id}`);
+                }
             });
 
-            layers.forEach((layer) => {
-                map.add(layer);
-                if (view) handles.push(setElevationProfilePopupEvent(view, layer, elevationProfile, profileExpand));
+            view.on('click', (event) => {
+                if (elevationProfileRef.current) (elevationProfileRef.current.input as any) = null;
+                highlightedFeatureRef.current?.remove();
+            });
+
+            layers.current.forEach((layer) => {
+                map.current.add(layer);
+                if (view) handles.push(setElevationProfilePopupEvent(view, layer, elevationProfileRef, profileExpand));
             });
 
             return () => {
