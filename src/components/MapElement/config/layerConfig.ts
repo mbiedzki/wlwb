@@ -1,12 +1,10 @@
 import { LayerProps } from '../types';
 
 /**
- * Represents a configuration for layers.
- * @typedef {Object} LayerProps
- * @property {string} id - The ID of the layer.
- * @property {string} title - The title of the layer.
- * @property {string} desc - The description of the layer.
- * @property {string} url - The URL of the layer.
+ * An array of configuration objects representing different geographical layers or routes.
+ * Each object describes a specific layer with its identifier, title, description, and URL to access its data.
+ *
+ * @type {LayerProps[]}
  */
 
 export const layerConfig: LayerProps[] = [
@@ -15,6 +13,7 @@ export const layerConfig: LayerProps[] = [
         title: 'Miasta',
         desc: 'Miasta przez które jechaliśmy',
         url: 'https://biedzki.pl/wlwb_layers/miasta.json',
+        visibleOnStart: false,
     },
     {
         id: '2001',
@@ -146,5 +145,11 @@ export const layerConfig: LayerProps[] = [
         title: '2024 Końskie - Chełm',
         desc: '471 km',
         url: 'https://biedzki.pl/wlwb_layers/2024.json',
+    },
+    {
+        id: '2025',
+        title: '2025 Frankfurt - Szczecin',
+        desc: '523 km',
+        url: 'https://biedzki.pl/wlwb_layers/2025.json',
     },
 ];

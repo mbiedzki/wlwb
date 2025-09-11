@@ -3,4 +3,5 @@ export interface LayerProps {
     title: string;
     desc: string;
     url: string;
+    visibleOnStart?: boolean;
 }

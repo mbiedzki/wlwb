@@ -96,6 +96,7 @@ const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): 
         title,
         desc,
         url,
+        visibleOnStart = true
     } = config;
 
     const isPointGeometry = id === 'miasta';
@@ -122,6 +123,7 @@ const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): 
         id,
         title,
         url,
+        visible: visibleOnStart,
         popupEnabled: true,
         popupTemplate: isPointGeometry ? pointPopupTemplate : linePopupTemplate,
         elevationInfo: {
