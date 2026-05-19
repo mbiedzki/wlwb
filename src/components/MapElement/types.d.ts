@@ -4,4 +4,5 @@ export interface LayerProps {
     desc: string;
     url: string;
     visibleOnStart?: boolean;
+    fields?: {name: string, alias: string, type: string}[]
 }

@@ -1,21 +1,70 @@
-@import '~@arcgis/core/assets/esri/themes/dark/main.css';
+@import '~@arcgis/core/assets/esri/themes/light/main.css';
 
 .App {
     padding: 0;
     margin: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* Make the AppLayout fill the viewport */
+.AppShell {
+    height: 100vh;
+}
+
+/* The map should fill whatever space AppLayout's content slot gives it */
+.MapView {
     height: 100%;
     width: 100%;
 }
 
-.MapView {
-    height: calc(100vh - 50px)
+/* Drawer styling */
+.AppShell__drawer {
+    padding: var(--lumo-space-m);
+    display: flex;
+    flex-direction: column;
+    gap: var(--lumo-space-m);
 }
 
-.HeaderView {
+.AppShell__brand {
+    margin: 0;
+    color: var(--lumo-primary-text-color);
+    font-size: var(--lumo-font-size-xl);
+}
+
+/* Navbar title styling */
+.AppShell__title {
+    font-size: var(--lumo-font-size-l);
+    margin: 0;
+    padding-inline: var(--lumo-space-m);
+}
+
+.AppShell__menu {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 50px;
-    color: #04f625;
-    background: #242424;
+    flex-direction: column;
+}
+
+/* Base state — smooth transitions for all 3D effects */
+vaadin-button {
+    transition: transform 120ms ease,
+    box-shadow 120ms ease,
+    background-color 120ms ease;
+    will-change: transform, box-shadow;
+}
+
+/* Hover — lift the button and add a layered shadow for depth */
+vaadin-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    background-color: #95caf8;
+    cursor: pointer;
+}
+
+/* Active (click) — press the button back down */
+vaadin-button:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
