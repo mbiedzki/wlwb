@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useRef } from 'react';
+import { Dispatch, MutableRefObject, SetStateAction, useEffect, useRef } from 'react';
 import SceneView from '@arcgis/core/views/SceneView';
 import {
     addToUI,
@@ -19,9 +19,10 @@ import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
  *
  * @param {MutableRefObject<HTMLDivElement | null>} mapRef - The reference to the HTML div element where the map
  *     will be rendered.
+ * @param setView
  * @returns {void}
  */
-export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>): void => {
+export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>, setView: Dispatch<SetStateAction<SceneView | null>>): void => {
 
     const map = useRef(getMap());
     const layers = useRef(getLayers());
@@ -63,6 +64,8 @@ export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>): v
                 if (view) handles.push(setElevationProfilePopupEvent(view, layer, elevationProfileRef, profileExpand));
             });
 
+            setView(view);
+
             return () => {
                 view?.destroy();
                 handles.forEach((handle) => handle.remove());
@@ -70,5 +73,5 @@ export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>): v
 
         })(mapRef);
 
-    }, [map, mapRef, layers]);
+    }, [map, mapRef, layers, setView]);
 };

@@ -58,7 +58,6 @@
     "semver": "^7.3.5",
     "source-map-loader": "^3.0.0",
     "style-loader": "^3.3.1",
-    "tailwindcss": "^3.0.2",
     "terser-webpack-plugin": "^5.2.5",
     "tslint": "^5.20.0",
     "tslint-react": "^4.1.0",
