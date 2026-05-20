@@ -2,7 +2,6 @@ import { Dispatch, MutableRefObject, SetStateAction, useEffect, useRef } from 'r
 import SceneView from '@arcgis/core/views/SceneView';
 import {
     addToUI,
-    getBaseMapsExpand,
     getElevationProfile,
     getHomeButton,
     getMap,
@@ -36,15 +35,15 @@ export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>, se
             view = getView(map.current, mapRef);
             if (!view) return;
 
-            addToUI(view, getHomeButton, 'top-right');
-            addToUI(view, getBaseMapsExpand, 'top-right');
-
             const layerListExpand = getLayerListExpand(view, highlightedFeatureRef, elevationProfileRef);
             view.ui.add(layerListExpand, 'top-right');
 
             elevationProfileRef.current = getElevationProfile(view);
             const profileExpand = getProfileExpand(view, elevationProfileRef);
             view.ui.add(profileExpand, 'top-right');
+
+            addToUI(view, getHomeButton, 'top-left');
+
 
             view.on('layerview-create-error', (event) => {
                 const { id } = event.layer;

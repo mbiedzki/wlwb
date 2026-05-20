@@ -1,5 +1,20 @@
 @import '~@arcgis/core/assets/esri/themes/light/main.css';
 
+:root {
+    --brand-color: rgb(7 104 7 / 0.88);
+    --text-color: #fafaf8;
+    --hoover-color: #65bc0e;
+
+    --lumo-base-color: #c7d1a8;
+    --lumo-primary-text-color: var(--brand-color);
+    --lumo-primary-color: var(--brand-color);
+    --lumo-header-text-color: var(--brand-color);
+
+    --vaadin-button-background: var(--brand-color);
+    --vaadin-button-text-color: var(--text-color);
+}
+
+
 .App {
     padding: 0;
     margin: 0;
@@ -28,8 +43,26 @@
 
 .AppShell__brand {
     margin: 0;
-    color: var(--lumo-primary-text-color);
+    color: var(--brand-color);
     font-size: var(--lumo-font-size-xl);
+}
+
+.initials-list h2 {
+    margin: 0;
+    /* Optional: keeps the baseline consistent */
+    line-height: 1;
+    color: var(--brand-color);
+}
+
+.initials-list .initial {
+    display: inline-block;
+    width: 1.2em; /* the "column" width — pick the widest letter */
+    text-align: right; /* right edge of the letter lines up */
+    padding-right: 0.1em; /* small visual gap before the rest of the word */
+    font-size: 1.6em; /* make it stand out */
+    font-weight: 700;
+    color: var(--text-color);
+    line-height: 1;
 }
 
 /* Navbar title styling */
@@ -58,7 +91,7 @@ vaadin-button:hover {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15),
     0 8px 16px rgba(0, 0, 0, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    background-color: #95caf8;
+    background-color: var(--hoover-color);
     cursor: pointer;
 }
 
@@ -67,4 +100,33 @@ vaadin-button:active {
     transform: translateY(1px);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2),
     inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ---- ArcGIS map widget buttons themed with Lumo ---- */
+.esri-widget--button {
+    background-color: var(--lumo-base-color);
+    color: var(--lumo-primary-text-color);
+    transition: transform 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.esri-widget--button:hover {
+    background-color: var(--hoover-color);
+    color: var(--lumo-primary-contrast-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.esri-widget--button:active {
+    transform: translateY(1px);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.esri-ui-top-left .esri-component,
+.esri-ui-top-right .esri-component {
+    border-radius: var(--lumo-border-radius-l);
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 }
