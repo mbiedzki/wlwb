@@ -1,7 +1,8 @@
 import { ReactElement, ReactNode, useState } from 'react';
 import { AppLayout, Button, Icon } from '@vaadin/react-components';
 import SceneView from '@arcgis/core/views/SceneView';
-import { CustomDialog } from '../CustomDialog/CustomDialog';
+import { CustomBaseLayersDialog } from '../CustomDialogs/CustomBaseLayersDialog';
+import { CustomLegendDialog } from '../CustomDialogs/CustomLegendDialog';
 
 interface AppHeaderProps {
     /** Page content rendered inside the AppLayout's main area. */
@@ -19,7 +20,8 @@ interface AppHeaderProps {
  */
 
 export const AppHeader = ({ children, view }: AppHeaderProps): ReactElement => {
-    const [open, setOpen] = useState(false);
+    const [baseLayersDialogOpened, setBaseLayersDialogOpened] = useState(false);
+    const [routesDialogOpened, setRoutesDialogOpened] = useState(false);
 
     const header = (
         <div className="initials-list">
@@ -46,7 +48,11 @@ export const AppHeader = ({ children, view }: AppHeaderProps): ReactElement => {
                 <img src={`${process.env.PUBLIC_URL}/mainPhoto.jpg`} alt="Wielkie Letnie Wyprawy Rowerowe Logo" />
                 <br />
                 <div className="AppShell__menu">
-                    <Button>
+                    <Button
+                        onClick={() => {
+                            setRoutesDialogOpened(!baseLayersDialogOpened);
+                        }}
+                    >
                         <Icon icon="vaadin:road" slot="prefix" />
                         Trasy
                     </Button>
@@ -56,7 +62,7 @@ export const AppHeader = ({ children, view }: AppHeaderProps): ReactElement => {
                     </Button>
                     <Button
                         onClick={() => {
-                            setOpen(!open);
+                            setBaseLayersDialogOpened(!baseLayersDialogOpened);
                         }}
                     >
                         <Icon icon="vaadin:align-justify" slot="prefix" />
@@ -67,7 +73,20 @@ export const AppHeader = ({ children, view }: AppHeaderProps): ReactElement => {
                     </Button>
                 </div>
             </div>
-            <CustomDialog opened={open} onOpenedChanged={setOpen} headerTitle="Warstwy podkładowe" closeLabel="Zamknij" view={view} />
+            <CustomBaseLayersDialog
+                opened={baseLayersDialogOpened}
+                onOpenedChanged={setBaseLayersDialogOpened}
+                headerTitle="Warstwy podkładowe"
+                closeLabel="Zamknij"
+                view={view}
+            />
+            <CustomLegendDialog
+                opened={routesDialogOpened}
+                onOpenedChanged={setRoutesDialogOpened}
+                headerTitle="Nasze trasy"
+                closeLabel="Zamknij"
+                view={view}
+            />
 
             {children}
         </AppLayout>

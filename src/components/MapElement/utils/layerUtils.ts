@@ -10,7 +10,6 @@ import ActionButton from '@arcgis/core/support/actions/ActionButton';
 import { MutableRefObject } from 'react';
 import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
 
-
 /**
  * Creates a renderer object for displaying a line symbol on a map.
  *
@@ -42,7 +41,7 @@ const createPointRendererObj = (): object => ({
         color: 'white',
         outline: {
             color: 'green',
-            width: 2,  // points
+            width: 2, // points
         },
     },
 });
@@ -62,7 +61,6 @@ const createLayer = (config: LayerProps, actionButton: ActionButton, rendererObj
     return layer;
 };
 
-
 /**
  * Retrieves a list of GeoJSON layers based on the layer configuration.
  *
@@ -70,7 +68,7 @@ const createLayer = (config: LayerProps, actionButton: ActionButton, rendererObj
  */
 export const getLayers = (): Array<GeoJSONLayer> => {
     return layerConfig.map((config, index) => {
-        const isPointGeometry = config.id === 'miasta';
+        const isPointGeometry: boolean = config.id === 'miasta';
         const actionButton = getProfileActionButton(config.id);
         const rendererObj = isPointGeometry ? createPointRendererObj() : createRendererObj(layerConfig.length, index);
         return createLayer(config, actionButton, rendererObj);
@@ -91,42 +89,59 @@ export const getLayers = (): Array<GeoJSONLayer> => {
  * @property {string} url - The URL to the GeoJSON data.
  */
 const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): GeoJSONLayer => {
-    const {
-        id,
-        title,
-        desc,
-        url,
-        visibleOnStart = true,
-    } = config;
+    const { id, title, desc, url, visibleOnStart = true } = config;
 
     const isPointGeometry = id === 'miasta';
 
     const linePopupTemplate = {
         title,
-        content: [{
-            type: 'text',
-            text: desc,
-        }],
+        content: [
+            {
+                type: 'text',
+                text: desc,
+            },
+        ],
         actions: [layerProfileActionButton],
     };
 
     const pointPopupTemplate = {
         title,
         content: '{expression/desc}',
-        expressionInfos: [{
-            name: 'desc',
-            expression: '$feature.cmt',
-        }],
+        expressionInfos: [
+            {
+                name: 'desc',
+                expression: '$feature.cmt',
+            },
+        ],
     };
 
     return new GeoJSONLayer({
         id,
         title,
         url,
+        copyright: desc,
         fields: [
-            {name: 'id', alias: 'ID', type: 'oid'},
-            {name: 'title', alias: 'Nazwa', type: 'string'},
-            {name: 'url', alias: 'url', type: 'string'}],
+            {
+                name: 'id',
+                alias: 'ID',
+                type: 'oid',
+            },
+            {
+                name: 'title',
+                alias: 'Nazwa',
+                type: 'string',
+            },
+            {
+                name: 'url',
+                alias: 'url',
+                type: 'string',
+            },
+            {
+                name: 'desc',
+                alias: 'desc',
+                type: 'string',
+            },
+        ],
         visible: visibleOnStart,
         popupEnabled: true,
         popupTemplate: isPointGeometry ? pointPopupTemplate : linePopupTemplate,
@@ -134,23 +149,27 @@ const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): 
             mode: 'relative-to-ground',
             offset: isPointGeometry ? 60 : 50, // Elevation offset in meters
         },
-        labelingInfo: isPointGeometry ? [{
-            symbol: {
-                type: 'text',
-                color: 'green',
-                haloColor: 'green',
-                haloSize: 0,
-                font: {
-                    family: 'Ubuntu Mono',
-                    size: 10,
-                    weight: 'bold',
-                },
-            },
-            labelPlacement: 'above-right',
-            labelExpressionInfo: {
-                expression: '$feature.name',
-            },
-        }] : undefined,
+        labelingInfo: isPointGeometry
+            ? [
+                  {
+                      symbol: {
+                          type: 'text',
+                          color: 'green',
+                          haloColor: 'green',
+                          haloSize: 0,
+                          font: {
+                              family: 'Ubuntu Mono',
+                              size: 10,
+                              weight: 'bold',
+                          },
+                      },
+                      labelPlacement: 'above-right',
+                      labelExpressionInfo: {
+                          expression: '$feature.name',
+                      },
+                  },
+              ]
+            : undefined,
     });
 };
 
@@ -181,9 +200,12 @@ const handleFullExtentAction = async (layer: GeoJSONLayer, view: SceneView): Pro
  *     elevation profile input.
  * @returns {Promise<void>} - A promise that resolves when the selection action is complete.
  */
-const handleSelectAction = async (layer: GeoJSONLayer, view: SceneView,
-                                  highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
-                                  elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Promise<void> => {
+const handleSelectAction = async (
+    layer: GeoJSONLayer,
+    view: SceneView,
+    highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+    elevationProfileRef: MutableRefObject<ElevationProfile | undefined>,
+): Promise<void> => {
     if (highlightedFeatureRef.current) highlightedFeatureRef.current.remove();
     if (elevationProfileRef.current) (elevationProfileRef.current as any).input = null;
     const queriedFeatures = await layer.queryFeatures();
@@ -202,8 +224,10 @@ const handleSelectAction = async (layer: GeoJSONLayer, view: SceneView,
  * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - Reference to the elevation profile
  *     component.
  */
-const handleDeselectAction = (highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
-                              elevationProfileRef: MutableRefObject<ElevationProfile | undefined>) => {
+const handleDeselectAction = (
+    highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+    elevationProfileRef: MutableRefObject<ElevationProfile | undefined>,
+) => {
     if (highlightedFeatureRef.current) highlightedFeatureRef.current.remove();
     if (elevationProfileRef.current) (elevationProfileRef.current as any).input = null;
 };
@@ -224,9 +248,13 @@ const handleDeselectAction = (highlightedFeatureRef: MutableRefObject<__esri.Han
  * @returns {Promise<__esri.Handle|void>} A promise that resolves to a handle if an action returns a handle,
  * or void otherwise.
  */
-const handleAction = async (actionId: string, layer: GeoJSONLayer, view: SceneView,
-                            highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
-                            elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Promise<__esri.Handle | void> => {
+const handleAction = async (
+    actionId: string,
+    layer: GeoJSONLayer,
+    view: SceneView,
+    highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+    elevationProfileRef: MutableRefObject<ElevationProfile | undefined>,
+): Promise<__esri.Handle | void> => {
     switch (actionId) {
         case 'full-extent':
             await handleFullExtentAction(layer, view);
@@ -256,9 +284,11 @@ const handleAction = async (actionId: string, layer: GeoJSONLayer, view: SceneVi
  * defined in the `defineLayerListActions` function, and handles triggered actions through an asynchronous event
  *     handler.
  */
-const getLayerList = (view: SceneView,
-                      highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
-                      elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): LayerList => {
+const getLayerList = (
+    view: SceneView,
+    highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+    elevationProfileRef: MutableRefObject<ElevationProfile | undefined>,
+): LayerList => {
     const layerList = new LayerList({
         container: document.createElement('div'),
         view: view,
@@ -283,9 +313,11 @@ const getLayerList = (view: SceneView,
  * @param {MutableRefObject<ElevationProfile | undefined>} elevationProfileRef - Reference to the elevation profile.
  * @returns {Expand} - An expandable widget containing the layer list.
  */
-export const getLayerListExpand = (view: SceneView,
-                                   highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
-                                   elevationProfileRef: MutableRefObject<ElevationProfile | undefined>): Expand =>
+export const getLayerListExpand = (
+    view: SceneView,
+    highlightedFeatureRef: MutableRefObject<__esri.Handle | undefined>,
+    elevationProfileRef: MutableRefObject<ElevationProfile | undefined>,
+): Expand =>
     new Expand({
         expandIcon: 'biking',
         expandTooltip: 'Wyprawy',
@@ -325,7 +357,7 @@ const createActions = (): Array<any> => {
  * @param {Object} event - The event object containing the item.
  * @param {any} event.item - The item for which to define layer list actions.
  */
-export const defineLayerListItem = async (event: { item: any; }) => {
+export const defineLayerListItem = async (event: { item: any }) => {
     const item = event.item;
     await item.layer.when();
     item.actionsSections = [createActions()];

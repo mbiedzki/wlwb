@@ -62,7 +62,8 @@ export const layerConfig: LayerProps[] = [
         title: '2010 Roztocze',
         desc: '381 km',
         url: 'https://biedzki.pl/wlwb_layers/2010.json',
-    }, {
+    },
+    {
         id: '2011',
         title: '2011 Podlasie i Kurpie',
         desc: '344 km',

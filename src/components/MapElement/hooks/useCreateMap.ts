@@ -1,17 +1,8 @@
 import { Dispatch, MutableRefObject, SetStateAction, useEffect, useRef } from 'react';
 import SceneView from '@arcgis/core/views/SceneView';
-import {
-    addToUI,
-    getElevationProfile,
-    getHomeButton,
-    getMap,
-    getProfileExpand,
-    getView,
-    setElevationProfilePopupEvent,
-} from '../utils/mapUtils';
-import { getLayerListExpand, getLayers } from '../utils/layerUtils';
+import { addToUI, getElevationProfile, getHomeButton, getMap, getProfileExpand, getView, setElevationProfilePopupEvent } from '../utils/mapUtils';
+import { getLayers } from '../utils/layerUtils';
 import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
-
 
 /**
  * Sets up a map with specified layers and UI components using a given mapRef.
@@ -21,29 +12,28 @@ import ElevationProfile from '@arcgis/core/widgets/ElevationProfile';
  * @param setView
  * @returns {void}
  */
-export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>, setView: Dispatch<SetStateAction<SceneView | null>>): void => {
-
+export const useCreateMap = (
+    mapRef: MutableRefObject<HTMLDivElement | null>,
+    setView: Dispatch<SetStateAction<SceneView | null>>,
+): SceneView | undefined => {
     const map = useRef(getMap());
     const layers = useRef(getLayers());
     const highlightedFeatureRef = useRef<__esri.Handle>();
     const elevationProfileRef = useRef<ElevationProfile>();
 
+    let view: SceneView | undefined;
+
     useEffect(() => {
-        let view: SceneView | undefined;
         const handles: IHandle[] = [];
         (async (mapRef: any) => {
             view = getView(map.current, mapRef);
             if (!view) return;
 
-            const layerListExpand = getLayerListExpand(view, highlightedFeatureRef, elevationProfileRef);
-            view.ui.add(layerListExpand, 'top-right');
-
             elevationProfileRef.current = getElevationProfile(view);
             const profileExpand = getProfileExpand(view, elevationProfileRef);
-            view.ui.add(profileExpand, 'top-right');
+            view.ui.add(profileExpand, 'top-left');
 
             addToUI(view, getHomeButton, 'top-left');
-
 
             view.on('layerview-create-error', (event) => {
                 const { id } = event.layer;
@@ -69,8 +59,8 @@ export const useCreateMap = (mapRef: MutableRefObject<HTMLDivElement | null>, se
                 view?.destroy();
                 handles.forEach((handle) => handle.remove());
             };
-
         })(mapRef);
-
     }, [map, mapRef, layers, setView]);
+
+    return view;
 };
