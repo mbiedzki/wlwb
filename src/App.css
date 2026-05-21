@@ -1,7 +1,8 @@
 @import '~@arcgis/core/assets/esri/themes/light/main.css';
 
 :root {
-    --brand-color: rgb(7 104 7 / 0.88);
+    --brand-color: #076807;
+    --brand-color-solid: #076807;
     --text-color: #fafaf8;
     --hoover-color: #65bc0e;
 
@@ -12,6 +13,47 @@
 
     --vaadin-button-background: var(--brand-color);
     --vaadin-button-text-color: var(--text-color);
+
+    /* ===== ArcGIS / Calcite – themes every widget in one place ===== */
+    --calcite-color-brand: var(--brand-color-solid);
+    --calcite-color-brand-hover: var(--hoover-color);
+    --calcite-color-brand-press: var(--brand-color-solid);
+    --calcite-color-brand-underlay: var(--lumo-base-color);
+
+    --calcite-color-background: var(--lumo-base-color);
+    --calcite-color-foreground-1: var(--lumo-base-color);
+    --calcite-color-foreground-2: #d8dfc0;
+    --calcite-color-foreground-3: #b7c294;
+
+    --calcite-color-text-1: var(--brand-color-solid);
+    --calcite-color-text-2: var(--brand-color-solid);
+    --calcite-color-text-3: var(--brand-color-solid);
+    --calcite-color-text-inverse: var(--text-color);
+    --calcite-color-text-link: var(--brand-color-solid);
+
+    --calcite-color-border-1: var(--brand-color-solid);
+    --calcite-color-border-2: rgba(7, 104, 7, 0.35);
+    --calcite-color-border-3: rgba(7, 104, 7, 0.20);
+    --calcite-color-border-input: var(--brand-color-solid);
+
+    --calcite-ui-icon-color: var(--brand-color-solid);
+
+    --esri-background-color: var(--lumo-base-color);
+    --esri-background-color-hover: var(--hoover-color);
+    --esri-background-color-active: var(--brand-color-solid);
+
+    --esri-text-color: var(--brand-color-solid);
+    --esri-text-color-hover: var(--text-color);
+    --esri-text-color-disabled: rgba(7, 104, 7, 0.5);
+
+    --esri-border-color: var(--brand-color-solid);
+    --esri-divider-color: rgba(7, 104, 7, 0.25);
+
+    --esri-color-blue: var(--brand-color-solid);
+    --esri-color-blue-hover: var(--hoover-color);
+
+    --esri-popup-header-background-color: var(--brand-color-solid);
+    --esri-popup-header-text-color: var(--text-color);
 }
 
 
@@ -57,6 +99,17 @@
 .AppShell__menu {
     display: flex;
     flex-direction: column;
+}
+
+.LinePopup {
+    color: var(--brand-color);
+    font-size: var(--lumo-font-size-m, 14px);
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1em;
 }
 
 /* Base state — smooth transitions for all 3D effects */
@@ -117,4 +170,263 @@ vaadin-button:active {
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15),
     0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* ... existing code ... */
+
+/* =========================================================
+   ArcGIS popup themed with the app palette
+   ========================================================= */
+
+/* Main card */
+.esri-view .esri-popup__main-container {
+    background: var(--lumo-base-color);
+    color: var(--brand-color);
+    border: 1px solid var(--brand-color);
+    border-radius: var(--lumo-border-radius-m, 6px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.2);
+    font-family: var(--lumo-font-family);
+}
+
+/* Pointer / arrow */
+.esri-view .esri-popup__pointer .esri-popup__pointer-direction {
+    background: var(--lumo-base-color);
+    border: 1px solid var(--brand-color);
+    box-shadow: none;
+}
+
+/* Header bar */
+.esri-view .esri-popup__header {
+    background: var(--brand-color);
+    color: var(--text-color);
+    border-bottom: 1px solid var(--brand-color);
+    border-radius: var(--lumo-border-radius-m, 6px) var(--lumo-border-radius-m, 6px) 0 0;
+}
+
+.esri-view .esri-popup__header-title,
+.esri-view .esri-popup__header-title:hover,
+.esri-view .esri-popup__header-title:focus {
+    background: var(--brand-color) !important;
+    color: var(--text-color) !important;
+    font-weight: 700;
+}
+
+.esri-view .esri-popup__header .esri-widget--button,
+.esri-view .esri-popup__feature-menu-header,
+.esri-view .esri-popup__header-buttons .esri-widget--button,
+.esri-view .esri-popup__header-buttons .esri-popup__button {
+    background: var(--brand-color) !important;
+    color: var(--text-color) !important;
+    transition: transform 120ms ease, background-color 120ms ease, color 120ms ease;
+}
+
+.esri-view .esri-popup__navigation [role="button"] {
+    background: var(--lumo-base-color);
+}
+
+.esri-view .esri-popup__header .esri-widget--button:hover,
+.esri-view .esri-popup__header .esri-widget--button:focus,
+.esri-view .esri-popup__header-buttons .esri-widget--button:hover,
+.esri-view .esri-popup__header-buttons .esri-widget--button:focus,
+.esri-view .esri-popup__navigation [role="button"]:hover,
+.esri-view .esri-popup__navigation [role="button"]:focus,
+.esri-view .esri-popup__navigation .esri-widget--button:hover,
+.esri-view .esri-popup__navigation .esri-widget--button:focus,
+.esri-view .esri-popup__header-buttons .esri-popup__button:hover,
+.esri-view .esri-popup__navigation .esri-popup__button:hover {
+    background: var(--hoover-color) !important;
+    color: var(--text-color) !important;
+    transform: translateY(-1px);
+}
+
+/* The whole title row turns into a button when the popup has a feature menu;
+   stop it from flashing white on hover. */
+.esri-view .esri-popup__header-title--button:hover,
+.esri-view .esri-popup__header-title--button:focus {
+    background: var(--hoover-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* The icons inside the buttons inherit color from the button – make sure
+   they don't override to a default. */
+.esri-view .esri-popup__header .esri-widget--button .esri-icon,
+.esri-view .esri-popup__header-buttons .esri-widget--button .esri-icon,
+.esri-view .esri-popup__navigation .esri-widget--button .esri-icon {
+    color: inherit !important;
+}
+
+/* "1 of N" pagination text */
+.esri-view .esri-popup__navigation .esri-popup__pagination-page-text,
+.esri-view .esri-popup__feature-menu-header {
+    color: var(--brand-color);
+}
+
+/* Body content */
+.esri-view .esri-popup__content {
+    color: var(--brand-color);
+    background: var(--lumo-base-color);
+    padding: var(--lumo-space-s) var(--lumo-space-m);
+}
+
+.esri-view .esri-popup__content a {
+    color: var(--brand-color);
+    text-decoration: underline;
+    text-decoration-color: var(--hoover-color);
+}
+
+.esri-view .esri-popup__content a:hover {
+    color: var(--hoover-color);
+}
+
+/* Attribute table inside the popup */
+.esri-view .esri-feature__content-element table.esri-widget__table {
+    background: transparent;
+    border-color: var(--brand-color);
+}
+
+.esri-view .esri-feature__content-element table.esri-widget__table th,
+.esri-view .esri-feature__content-element table.esri-widget__table td {
+    color: var(--brand-color);
+    border-color: rgba(7, 104, 7, 0.25);
+    background: transparent;
+}
+
+.esri-view .esri-feature__content-element table.esri-widget__table tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Action footer (Zoom to, custom actions) */
+.esri-view .esri-popup__footer,
+.esri-view .esri-popup__actions {
+    background: var(--lumo-base-color);
+    border-top: 1px solid rgba(7, 104, 7, 0.25);
+}
+
+.esri-view .esri-popup__action,
+.esri-view .esri-popup__action-text {
+    color: var(--brand-color);
+}
+
+.esri-view .esri-popup__action:hover {
+    background: var(--hoover-color);
+    color: var(--text-color);
+}
+
+/* Feature menu (list of features when multiple are picked) */
+.esri-view .esri-popup__feature-menu-item {
+    color: var(--brand-color);
+    background: var(--lumo-base-color);
+}
+
+.esri-view .esri-popup__feature-menu-item:hover,
+.esri-view .esri-popup__feature-menu-item--selected {
+    background: var(--hoover-color);
+    color: var(--text-color);
+}
+
+/* Loading indicator inside the popup */
+.esri-view .esri-popup__loading-container .esri-icon-loading-indicator {
+    color: var(--brand-color);
+}
+
+/* Body content – note: in 4.27+ the body is rendered by the Features widget,
+   so .esri-popup__content alone is no longer enough. */
+.esri-view .esri-popup__content,
+.esri-view .esri-popup .esri-features,
+.esri-view .esri-popup .esri-feature,
+.esri-view .esri-popup .esri-feature__main-container,
+.esri-view .esri-popup .esri-feature__size-container,
+.esri-view .esri-popup .esri-feature-content,
+.esri-view .esri-popup .esri-feature__content-element {
+    background: var(--lumo-base-color) !important;
+    color: var(--brand-color);
+}
+
+/* Field-list rows ("Fields" content element) */
+.esri-view .esri-popup .esri-feature-fields,
+.esri-view .esri-popup .esri-feature-fields__field-header,
+.esri-view .esri-popup .esri-feature-fields__field-data {
+    background: transparent !important;
+    color: var(--brand-color);
+    border-color: rgba(7, 104, 7, 0.25);
+}
+
+.esri-view .esri-popup .esri-feature-fields tr:nth-child(even) td {
+    background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Text content element (description) */
+.esri-view .esri-popup .esri-feature__text {
+    background: transparent !important;
+    color: var(--brand-color);
+}
+
+/* ===== Expand widget – button + opened panel ===== */
+.esri-view .esri-expand .esri-widget--button,
+.esri-view .esri-expand__container,
+.esri-view .esri-expand__container--expanded {
+    background-color: var(--lumo-base-color);
+    color: var(--brand-color-solid);
+}
+
+.esri-view .esri-expand .esri-widget--button:hover,
+.esri-view .esri-expand__container:hover {
+    background-color: var(--hoover-color);
+    color: var(--text-color);
+}
+
+/* The content panel that slides out from the Expand */
+.esri-view .esri-expand__content,
+.esri-view .esri-expand__panel,
+.esri-view .esri-expand .esri-widget--panel {
+    background-color: var(--lumo-base-color);
+    color: var(--brand-color-solid);
+    border-radius: var(--lumo-border-radius-m, 6px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* The icon inside the Expand button (uses an icon-font) */
+.esri-view .esri-expand .esri-icon {
+    color: inherit;
+}
+
+/* ===== Popup header title (not driven by Calcite/Esri tokens) ===== */
+.App .esri-view .esri-popup__header-title,
+.App .esri-view .esri-popup__header h2.esri-popup__header-title,
+.App .esri-view .esri-popup__header-title--button,
+.App .esri-view .esri-popup__header [role="button"] {
+    background-color: var(--brand-color-solid);
+    color: var(--text-color);
+    font-weight: 700;
+}
+
+/* Hover / focus – one notch more specific than the default rule above */
+.App .esri-view .esri-popup__header .esri-popup__header-title:hover,
+.App .esri-view .esri-popup__header .esri-popup__header-title:focus,
+.App .esri-view .esri-popup__header .esri-popup__header-title--button:hover,
+.App .esri-view .esri-popup__header .esri-popup__header-title--button:focus,
+.App .esri-view .esri-popup__header [role="button"]:hover,
+.App .esri-view .esri-popup__header [role="button"]:focus,
+.App .esri-view .esri-popup__header button:hover,
+.App .esri-view .esri-popup__header button:focus {
+    background-color: var(--brand-color-solid);
+    color: var(--text-color);
+}
+
+/* Calcite icon inside the popup header button */
+.App .esri-view .esri-popup__header button calcite-icon,
+.App .esri-view .esri-popup__header [role="button"] calcite-icon {
+    color: var(--text-color);
+    --calcite-ui-icon-color: var(--text-color);
+}
+
+/* Hover state for the same icon */
+.App .esri-view .esri-popup__header button:hover calcite-icon,
+.App .esri-view .esri-popup__header button:focus calcite-icon,
+.App .esri-view .esri-popup__header [role="button"]:hover calcite-icon,
+.App .esri-view .esri-popup__header [role="button"]:focus calcite-icon {
+    background-color: var(--hoover-color);
+    --calcite-ui-icon-color: var(--brand-color-solid);
 }

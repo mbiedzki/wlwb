@@ -98,7 +98,7 @@ const createGeoJSONLayer = (config: LayerProps, layerProfileActionButton: any): 
         content: [
             {
                 type: 'text',
-                text: desc,
+                text: `<div class="LinePopup">Długość:&nbsp;${desc}</div>`,
             },
         ],
         actions: [layerProfileActionButton],
