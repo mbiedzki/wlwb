@@ -75,6 +75,14 @@
     width: 100%;
 }
 
+.esri-view-surface:focus:not(:focus-visible)::after,
+.esri-view-surface--inset-outline:focus:not(:focus-visible)::after,
+.esri-view-surface--touch-none:focus:not(:focus-visible)::after {
+    box-shadow: none !important;
+    outline: none !important;
+    content: none !important;
+}
+
 /* Drawer styling */
 .AppShell__drawer {
     padding: var(--lumo-space-m);

@@ -49,7 +49,7 @@ export const enableHoverPopups = (
 
                 const graphicHit = response.results.find((r) => r.type === 'graphic') as any | undefined;
 
-                if (!graphicHit) {
+                if (!graphicHit || view.popup?.visible) {
                     lastFeatureId = null;
                     clearHighlight();
                     options?.onHit?.(null);

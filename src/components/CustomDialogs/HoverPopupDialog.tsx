@@ -48,8 +48,14 @@ export const HoverPopupDialog = ({ hit }: Props) => {
     return (
         <Dialog opened={!!hit} modeless noCloseOnEsc noCloseOnOutsideClick>
             <>
-                <div style={{ minWidth: 10 }}>{hit && <div>{(hit.graphic as any).layer?.title}</div>}</div>
-                <div style={{ minWidth: 10 }}>{hit && <div>{(hit.graphic as any).layer?.copyright}</div>}</div>
+                <div
+                    style={{
+                        minWidth: 10,
+                        color: 'var(--lumo-primary-text-color)',
+                    }}
+                >
+                    {hit && <div>{(hit.graphic as any).layer?.title}</div>}
+                </div>
             </>
         </Dialog>
     );
